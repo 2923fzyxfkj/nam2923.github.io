@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的博客系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status.active {
+            color: #7cffcb;
+        }
+
+        .status.inactive {
+            color: #ff7c7c;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .blog-form-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-posts-section {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4b6cb7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+            outline: none;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .blog-posts-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .posts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .posts-count {
+            background: #4b6cb7;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .blog-post {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4b6cb7;
+            transition: all 0.3s;
+        }
+
+        .blog-post:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .post-title {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .post-date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .post-content {
+            color: #34495e;
+            line-height: 1.7;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+        }
+
+        .debug-panel {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-family: monospace;
+        }
+
+        .debug-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .debug-content {
+            background: #1a2536;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="header-content">
+            <div>
+                <h1><i class="fas fa-blog logo"></i> 我的博客系统</h1>
+                <p>分享想法，记录生活</p>
+            </div>
+            <div class="status active" id="storageStatus">
+                <i class="fas fa-circle"></i> localStorage 可用
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <section class="blog-form-section">
+            <h2><i class="fas fa-pen-alt"></i> 发布新文章</h2>
+
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> 文章发布成功！
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+            </div>
+
+            <form id="blogForm">
+                <div class="form-group">
+                    <label for="title"><i class="fas fa-heading"></i> 标题</label>
+                    <input type="text" id="title" placeholder="输入文章标题" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="content"><i class="fas fa-align-left"></i> 内容</label>
+                    <textarea id="content" placeholder="输入文章内容..." required></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> 发布文章
+                </button>
+            </form>
+        </section>
+
+        <section class="blog-posts-section">
+            <div class="posts-header">
+                <h2><i class="fas fa-book-open"></i> 博客文章</h2>
+                <div class="posts-count" id="postsCount">2 篇文章</div>
+            </div>
+
+            <div class="blog-posts-container" id="blogPosts">
+                <!-- 文章将通过JavaScript动态加载 -->
+            </div>
+        </section>
+    </div>
+
+    <div class="debug-panel">
+        <div class="debug-header">
+            <h3><i class="fas fa-bug"></i> 调试信息</h3>
+            <button id="refreshDebug">
+                <i class="fas fa-sync-alt"></i> 刷新
+            </button>
+        </div>
+        <div class="debug-content" id="debugContent">
+            <!-- 调试信息将在这里显示 -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // XSS防护函数 - 转义HTML特殊字符
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // 检测localStorage是否可用
+    function isLocalStorageSupported() {
+        try {
+            const testKey = 'test';
+            localStorage.setItem(testKey, testKey);
+            localStorage.removeItem(testKey);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // 后端处理逻辑
+    class BlogBackend {
+        constructor() {
+            this.posts = [];
+            this.loadPosts();
+        }
+
+        // 模拟从文件加载博客文章
+        loadPosts() {
+            try {
+                if (!isLocalStorageSupported()) {
+                    throw new Error("localStorage不可用");
+                }
+
+                const storedPosts = localStorage.getItem('blogPosts');
+                if (storedPosts) {
+                    this.posts = JSON.parse(storedPosts);
+                } else {
+                    // 初始化示例文章
+                    this.posts = [
+                        {
+                            id: 1,
+                            title: "欢迎来到我的博客",
+                            content: "这是我的第一篇博客文章。在这里我会分享我的想法和经验。\n\n希望您喜欢这个简单的博客系统！",
+                            date: new Date().toLocaleDateString()
+                        },
+                        {
+                            id: 2,
+                            title: "如何创建博客系统",
+                            content: "今天我学习了如何创建一个简单的博客系统，使用HTML、CSS和JavaScript。\n\n关键点：\n1. 使用localStorage存储数据\n2. 实现XSS防护\n3. 设计响应式界面",
+                            date: new Date().toLocaleDateString()
+                        }
+                    ];
+                    this.savePosts();
+                }
+                return true;
+            } catch (error) {
+                console.error("加载博客文章失败:", error);
+                this.posts = [];
+                return false;
+            }
+        }
+
+        // 模拟保存博客文章到文件
+        savePosts() {
+            try {
+                if (!isLocalStorageSupported()) {
+                    throw new Error("localStorage不可用");
+                }
+
+                localStorage.setItem('blogPosts', JSON.stringify(this.posts));
+                return true;
+            } catch (error) {
+                console.error("保存博客文章失败:", error);
+                return false;
+            }
+        }
+
+        // 获取所有博客文章
+        getAllPosts() {
+            return [...this.posts].reverse(); // 按时间倒序
+        }
+
+        // 创建新博客文章
+        createPost(title, content) {
+            const newPost = {
+                id: this.posts.length > 0 ? Math.max(...this.posts.map(p => p.id)) + 1 : 1,
+                title: title,
+                content: content,
+                date: new Date().toLocaleDateString()
+            };
+
+            this.posts.push(newPost);
+            const saveResult = this.savePosts();
+
+            if (!saveResult) {
+                return null;
+            }
+
+            return newPost;
+        }
+
+        // 根据ID获取博客文章
+        getPostById(id) {
+            return this.posts.find(post => post.id === id);
+        }
+
+        // 更新博客文章
+        updatePost(id, title, content) {
+            const postIndex = this.posts.findIndex(post => post.id === id);
+            if (postIndex !== -1) {
+                this.posts[postIndex].title = title;
+                this.posts[postIndex].content = content;
+                this.posts[postIndex].date = new Date().toLocaleDateString();
+                this.savePosts();
+                return this.posts[postIndex];
+            }
+            return null;
+        }
+
+        // 删除博客文章
+        deletePost(id) {
+            const postIndex = this.posts.findIndex(post => post.id === id);
+            if (postIndex !== -1) {
+                const deletedPost = this.posts.splice(postIndex, 1)[0];
+                this.savePosts();
+                return deletedPost;
+            }
+            return null;
+        }
+    }
+
+    // 显示博客文章
+    function displayBlogPostsBackend(posts) {
+        const blogPostsContainer = document.getElementById('blogPosts');
+        const postsCount = document.getElementById('postsCount');
+
+        blogPostsContainer.innerHTML = '';
+        postsCount.textContent = `${posts.length} 篇文章`;
+
+        if (posts.length === 0) {
+            blogPostsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="far fa-folder-open"></i>
+                        <h3>暂无博客文章</h3>
+                        <p>发布您的第一篇文章吧！</p>
+                    </div>
+                `;
+            return;
+        }
+
+        posts.forEach(post => {
+            const postElement = document.createElement('article');
+            postElement.className = 'blog-post';
+            postElement.innerHTML = `
+                    <h3 class="post-title"><i class="fas fa-file-alt"></i> ${escapeHtml(post.title)}</h3>
+                    <p class="post-date"><i class="far fa-calendar"></i> 发布于: ${escapeHtml(post.date)}</p>
+                    <p class="post-content">${escapeHtml(post.content).replace(/\n/g, '<br>')}</p>
+                `;
+            blogPostsContainer.appendChild(postElement);
+        });
+    }
+
+    // 初始化后端服务
+    const blogBackend = new BlogBackend();
+
+    // 加载并显示博客文章
+    function loadBlogPostsBackend() {
+        const posts = blogBackend.getAllPosts();
+        displayBlogPostsBackend(posts);
+        updateDebugInfo();
+    }
+
+    // 添加博客文章
+    function addBlogPostBackend(title, content) {
+        if (!title.trim() || !content.trim()) {
+            return { success: false, message: "标题和内容不能为空" };
+        }
+
+        const newPost = blogBackend.createPost(title, content);
+
+        if (!newPost) {
+            return { success: false, message: "保存文章失败，请检查localStorage" };
+        }
+
+        loadBlogPostsBackend();
+        return { success: true, message: "文章发布成功！", post: newPost };
+    }
+
+    // 更新调试信息
+    function updateDebugInfo() {
+        const debugContent = document.getElementById('debugContent');
+        const posts = blogBackend.getAllPosts().reverse();
+
+        let debugHTML = '<strong>当前文章数据:</strong>\n';
+
+        if (posts.length === 0) {
+            debugHTML += '无文章数据\n';
+        } else {
+            debugHTML += JSON.stringify(posts, null, 2);
+        }
+
+        debugHTML += '\n\n<strong>localStorage状态:</strong>\n';
+        debugHTML += isLocalStorageSupported() ? '可用' : '不可用';
+
+        debugHTML += '\n\n<strong>已使用空间:</strong>\n';
+        try {
+            let total = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    total += localStorage[key].length * 2; // 每个字符2字节
+                }
+            }
+            debugHTML += `${(total / 1024).toFixed(2)} KB / 5 MB`;
+        } catch (e) {
+            debugHTML += '无法计算';
+        }
+
+        debugContent.innerHTML = debugHTML.replace(/\n/g, '<br>');
+    }
+
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        // 检查localStorage状态
+        const storageStatus = document.getElementById('storageStatus');
+        if (!isLocalStorageSupported()) {
+            storageStatus.innerHTML = '<i class="fas fa-circle"></i> localStorage 不可用';
+            storageStatus.classList.remove('active');
+            storageStatus.classList.add('inactive');
+        }
+
+        // 加载文章
+        loadBlogPostsBackend();
+
+        // 表单提交处理
+        document.getElementById('blogForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+
+            // 隐藏所有消息
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            if (title && content) {
+                const result = addBlogPostBackend(title, content);
+
+                if (result.success) {
+                    // 清空表单
+                    document.getElementById('title').value = '';
+                    document.getElementById('content').value = '';
+
+                    // 显示成功消息
+                    successMessage.style.display = 'block';
+                } else {
+                    // 显示错误消息
+                    errorText.textContent = result.message;
+                    errorMessage.style.display = 'block';
+                }
+            } else {
+                // 显示错误消息
+                errorText.textContent = "标题和内容不能为空";
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        // 调试面板刷新按钮
+        document.getElementById('refreshDebug').addEventListener('click', function() {
+            updateDebugInfo();
+        });
+    });
+</script>
+</body>
+</html>
